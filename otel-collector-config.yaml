@@ -1,13 +1,17 @@
 receivers:
   otlp:
     protocols:
+      grpc:
       http:
         cors:
           allowed_origins: ["*"]
           allowed_headers: ["*"]
 exporters:
+  otlp:
+    endpoint: "10.10.70.112:4317"
+    tls:
+      insecure: true
   logging:
-    verbosity: Detailed
   jaeger:
     endpoint: jaeger-all-in-one:14250
     tls:
@@ -21,5 +25,5 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [logging, jaeger]
+      exporters: [otlp, logging]
       processors: [batch]
