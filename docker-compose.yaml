@@ -1,5 +1,6 @@
 version: "2"
 services:
+  # Frontend
   front-end:
     build:
       context: ./front-end
@@ -8,12 +9,21 @@ services:
     ports:
       - "3000:3000"
     env_file:
-     - ./front-end/src/.env
+      - ./front-end/src/.env
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=collector:4318
+      - DEMO_SERVER_ENDPOINT=http://localhost:3000
+  # Backend
   express-server:
     build:
       context: ./express-server
+    depends_on:
+      - collector
     ports:
       - "5000:5000"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=collector:4318
+  # Collector
   collector:
     image: otel/opentelemetry-collector:latest
     command: ["--config=/otel-collector-config.yaml"]
@@ -23,7 +33,7 @@ services:
       - "4318:4318"
     depends_on:
       - jaeger-all-in-one
-   # Jaeger
+  # Jaeger
   jaeger-all-in-one:
     hostname: jaeger-all-in-one
     image: jaegertracing/all-in-one:latest

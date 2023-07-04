@@ -24,6 +24,7 @@ const { FetchInstrumentation } = require('@opentelemetry/instrumentation-fetch')
 const consoleExporter = new ConsoleSpanExporter();
 
 const collectorExporter = new OTLPTraceExporter({
+  // url: "10.10.70.112:4317",
   headers: {}
 });
 
